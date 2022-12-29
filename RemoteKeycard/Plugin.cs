@@ -10,15 +10,13 @@ namespace RemoteKeycard
 {
     public class Plugin
     {
-        public static Plugin Singleton;
-
         [PluginConfig]
         public Config Config;
 
-        [PluginEntryPoint("RemoteKeycard", "1.0.0", "Allo player to open doors and generators without a Keycard in hand", "SrLicht")]
+        [PluginEntryPoint("RemoteKeycard", "1.0.0", "Allow player to open doors and lockers without a Keycard in hand", "SrLicht")]
         void LoadPlugin()
         {
-            Singleton = this;
+            PluginAPI.Events.EventManager.RegisterEvents(this);
         }
 
         [PluginEvent(ServerEventType.PlayerInteractDoor)]
