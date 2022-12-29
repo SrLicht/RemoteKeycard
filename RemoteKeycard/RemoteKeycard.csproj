@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+ <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>1.0.1</Version>
+    <TargetFramework>net48</TargetFramework>
+  </PropertyGroup>
+
+ <Import Project="../Cerberus.props" />
+
+ <ItemGroup>
+   <Compile Remove="Properties\**" />
+   <EmbeddedResource Remove="Properties\**" />
+   <None Remove="Properties\**" />
+ </ItemGroup>
+
+ <ItemGroup>
+   <None Remove="FodyWeavers.xml" />
+ </ItemGroup>
+
+ <ItemGroup>
+   <None Include="..\.editorconfig" Link=".editorconfig" />
+ </ItemGroup>
+
+ <ItemGroup>
+   <PackageReference Include="Northwood.PluginAPI" Version="12.0.0-rc.5" />
+   <PackageReference Include="Northwood.PluginAPI.Analyzers" Version="12.0.0-rc.5" />
+   <PackageReference Include="YamlDotNet" Version="12.2.1" />
+ </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp-firstpass" HintPath="$(EXILED_References)\Assembly-CSharp-firstpass.dll" Private="false" />
+    <Reference Include="Assembly-CSharp" HintPath="$(EXILED_References)\Assembly-CSharp-Publicized.dll" Private="false" />
+    <Reference Include="CommandSystem.Core" HintPath="$(EXILED_References)\CommandSystem.Core.dll" Private="false" />
+    <Reference Include="Mirror" HintPath="$(EXILED_References)\Mirror.dll" Private="false" />
+    <Reference Include="System.Core" HintPath="$(EXILED_References)\System.Core.dll" Private="false" />
+    <Reference Include="UnityEngine" HintPath="$(EXILED_References)\UnityEngine.dll" Private="false" />
+    <Reference Include="NorthwoodLib" HintPath="$(EXILED_References)\NorthwoodLib.dll" Private="false" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(EXILED_References)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="UnityEngine.AudioModule" HintPath="$(EXILED_References)\UnityEngine.AudioModule.dll" Private="false" />
+
+    <Reference Include="UnityEngine.UnityWebRequestModule" HintPath="$(EXILED_References)\UnityEngine.UnityWebRequestModule.dll" Private="false" />
+  </ItemGroup>
+</Project>
