@@ -24,31 +24,37 @@ namespace RemoteKeycard
         // These damn events need a lot of checks to keep bad things from happening so read it at your own risk.
 
         [PluginEvent(ServerEventType.PlayerInteractDoor)]
-        void OnPlayerInteractDoor(Player ply, DoorVariant door, bool canAccess)
+        bool OnPlayerInteractDoor(Player ply, DoorVariant door, bool canOpen)
         {
-            if (Config.IsEnabled && !Config.BlackListRole.Contains(ply.Role))
+            if (!Config.IsEnabled || ply.IsSCP() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
+                Config.BlacklistedDoors.Any(d => door.name.StartsWith(d))
+                || ply.CurrentItem is KeycardItem) return true;
+
+            if (ply.HasKeycardPermission(door.RequiredPermissions.RequiredPermissions))
             {
-                if (!ply.IsWithoutItems() && ply.HasKeycardPermission(door.RequiredPermissions.RequiredPermissions) &&
-                    ply.CurrentItem is not KeycardItem)
-                {
-                    canAccess = true;
-                    door.Toggle();
-                }
+                canOpen = true;
+                door.Toggle();
+                return false;
             }
+
+            return true;
         }
 
         [PluginEvent(ServerEventType.PlayerInteractLocker)]
-        void OnPlayerInteractLocker(Player ply, Locker locker, byte colliderID, bool canAccess)
+        bool OnPlayerInteractLocker(Player ply, Locker locker, byte colliderID, bool canAccess)
         {
-            if (Config.IsEnabled && !Config.BlackListRole.Contains(ply.Role))
+            if (!Config.IsEnabled || ply.IsSCP() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
+                Config.BlacklistedLockers.Any(l => locker.name.StartsWith(l)) ||
+                ply.CurrentItem is KeycardItem) return true;
+            
+            if(locker.Chambers.TryGet(colliderID, out var chamber) && ply.HasKeycardPermission(chamber.RequiredPermissions, true))
             {
-                if(locker.Chambers.TryGet(colliderID, out var chamber) && chamber.AcceptableItems.Any(i => i.IsSCP()) && !ply.IsWithoutItems() &&
-                ply.HasKeycardPermission(chamber.RequiredPermissions, true) && ply.CurrentItem is not KeycardItem)
-                {
-                    canAccess = true;
-                    locker.Toggle(colliderID);
-                }
+                canAccess = true;
+                locker.Toggle(colliderID);
+                return false;
             }
+
+            return true;
         }
     }
 }

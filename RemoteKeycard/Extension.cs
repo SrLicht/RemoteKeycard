@@ -1,6 +1,7 @@
 using Interactables.Interobjects.DoorUtils;
 using InventorySystem.Items.Keycards;
 using MapGeneration.Distributors;
+using PlayerRoles;
 using PluginAPI.Core;
 using PluginAPI.Core.Interfaces;
 
@@ -66,11 +67,21 @@ namespace RemoteKeycard
         /// <summary>
         /// Check if a Itemtype is SCP Item
         /// </summary>
-        /// <param name="type"></param>
         /// <returns>true if ItemType is SCP</returns>
         public static bool IsSCP(this ItemType type) => type is ItemType.SCP018 or ItemType.SCP500 or ItemType.SCP268 or ItemType.SCP207 or ItemType.SCP244a or ItemType.SCP244b or ItemType.SCP2176 or ItemType.SCP1853;
 
+        /// <summary>
+        /// Check if the player has no items in is inventory.
+        /// </summary>
+        /// <returns>true if player no have items</returns>
         public static bool IsWithoutItems(this Player ply) =>
             ply.ReferenceHub.inventory.UserInventory.Items.Count == 0;
+
+        /// <summary>
+        /// Check if the player is any SCP.
+        /// </summary>
+        /// <returns>true if player is SCP</returns>
+        public static bool IsSCP(this Player ply) => ply.Role is RoleTypeId.Scp049 or RoleTypeId.Scp079
+            or RoleTypeId.Scp096 or RoleTypeId.Scp106 or RoleTypeId.Scp173 or RoleTypeId.Scp0492 or RoleTypeId.Scp939;
     }
 }
