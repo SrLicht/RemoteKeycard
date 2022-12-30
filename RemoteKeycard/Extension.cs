@@ -58,9 +58,19 @@ namespace RemoteKeycard
         public static void Toggle(this Locker locker, byte colliderId)
         {
             var chamber = locker.Chambers[colliderId];
-
+            
             chamber.SetDoor(!chamber.IsOpen, locker._grantedBeep);
             locker.RefreshOpenedSyncvar();
         }
+        
+        /// <summary>
+        /// Check if a Itemtype is SCP Item
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>true if ItemType is SCP</returns>
+        public static bool IsSCP(this ItemType type) => type is ItemType.SCP018 or ItemType.SCP500 or ItemType.SCP268 or ItemType.SCP207 or ItemType.SCP244a or ItemType.SCP244b or ItemType.SCP2176 or ItemType.SCP1853;
+
+        public static bool IsWithoutItems(this Player ply) =>
+            ply.ReferenceHub.inventory.UserInventory.Items.Count == 0;
     }
 }

@@ -4,7 +4,7 @@
  <PropertyGroup>
     <OutputType>Library</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Version>1.0.1</Version>
+    <Version></Version>
     <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
