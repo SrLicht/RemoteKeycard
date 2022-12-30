@@ -15,7 +15,7 @@ namespace RemoteKeycard
         [PluginConfig]
         public Config Config;
 
-        [PluginEntryPoint("RemoteKeycard", "1.0.2", "Allow player to open doors and lockers without a Keycard in hand", "SrLicht")]
+        [PluginEntryPoint("RemoteKeycard", "1.1.0", "Allow player to open doors and lockers without a Keycard in hand", "SrLicht")]
         void LoadPlugin()
         {
             PluginAPI.Events.EventManager.RegisterEvents(this);
