@@ -24,15 +24,20 @@ namespace RemoteKeycard
                 {
                     return false;
                 }
-                
+
+                bool returnValues = false;
+
                 foreach (var item in player.ReferenceHub.inventory.UserInventory.Items.Values)
                 {
                     if (item is not KeycardItem) continue;
 
                     var keycard = item as KeycardItem;
 
-                    return requiresAllPermissions ? keycard.Permissions.HasFlag(permissions) : (keycard.Permissions & permissions) != 0;
+                    returnValues = requiresAllPermissions ? keycard.Permissions.HasFlag(permissions) : (keycard.Permissions & permissions) != 0;
+
+                    if (returnValues) return true;
                 }
+
                 return false;
             }
             catch (System.Exception e)
@@ -51,18 +56,18 @@ namespace RemoteKeycard
             door.NetworkTargetState = !door.NetworkTargetState;
         }
         
-        /// <summary>
-        /// Open or Close this <see cref="Locker"/> its need ColliderID
-        /// </summary>
-        /// <param name="locker"></param>
-        /// <param name="colliderId"></param>
-        public static void Toggle(this Locker locker, byte colliderId)
-        {
-            var chamber = locker.Chambers[colliderId];
+        ///// <summary>
+        ///// Open or Close this <see cref="Locker"/> its need ColliderID
+        ///// </summary>
+        ///// <param name="locker"></param>
+        ///// <param name="colliderId"></param>
+        //public static void Toggle(this Locker locker, byte colliderId)
+        //{
+        //    var chamber = locker.Chambers[colliderId];
             
-            chamber.SetDoor(!chamber.IsOpen, locker._grantedBeep);
-            locker.RefreshOpenedSyncvar();
-        }
+        //    chamber.SetDoor(!chamber.IsOpen, locker._grantedBeep);
+        //    locker.RefreshOpenedSyncvar();
+        //}
         
         /// <summary>
         /// Check if a Itemtype is SCP Item
