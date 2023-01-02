@@ -88,5 +88,33 @@ namespace RemoteKeycard
         /// <returns>true if player is SCP</returns>
         public static bool IsSCP(this Player ply) => ply.Role is RoleTypeId.Scp049 or RoleTypeId.Scp079
             or RoleTypeId.Scp096 or RoleTypeId.Scp106 or RoleTypeId.Scp173 or RoleTypeId.Scp0492 or RoleTypeId.Scp939;
+
+        /// <summary>
+        /// Get if this <see cref="Scp079Generator"/> is unlocked
+        /// </summary>
+        public static bool IsUnlocked(this Scp079Generator gen)
+        {
+            return gen.HasFlag(gen._flags, Scp079Generator.GeneratorFlags.Unlocked);
+        }
+
+        /// <summary>
+        /// Unlock or lock this <see cref="Scp079Generator"/>
+        /// </summary>
+        public static void Unlock(this Scp079Generator gen)
+        {
+            var isUnlock = gen.HasFlag(gen._flags, Scp079Generator.GeneratorFlags.Unlocked);
+
+            gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, !isUnlock);
+        }
+
+        /// <summary>
+        /// Open or close this <see cref="Scp079Generator"/>
+        /// </summary>
+        public static void Open(this Scp079Generator gen)
+        {
+            var isOpen = gen.HasFlag(gen._flags, Scp079Generator.GeneratorFlags.Open);
+
+            gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, !isOpen);
+        }
     }
 }
