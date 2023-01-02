@@ -15,7 +15,7 @@ namespace RemoteKeycard
         [PluginConfig]
         public Config Config;
 
-        [PluginEntryPoint("RemoteKeycard", "1.1.0", "Allow player to open doors and lockers without a Keycard in hand", "SrLicht")]
+        [PluginEntryPoint("RemoteKeycard", "1.1.1", "Allow player to open doors and lockers without a Keycard in hand", "SrLicht")]
         void LoadPlugin()
         {
             PluginAPI.Events.EventManager.RegisterEvents(this);
@@ -41,16 +41,17 @@ namespace RemoteKeycard
         }
 
         [PluginEvent(ServerEventType.PlayerInteractLocker)]
-        bool OnPlayerInteractLocker(Player ply, Locker locker, byte colliderID, bool canAccess)
+        bool OnPlayerInteractLocker(Player ply, Locker locker, LockerChamber lockerChamber, bool canAccess)
         {
             if (!Config.IsEnabled || ply.IsSCP() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
                 Config.BlacklistedLockers.Any(l => locker.name.StartsWith(l)) ||
                 ply.CurrentItem is KeycardItem) return true;
-            
-            if(locker.Chambers.TryGet(colliderID, out var chamber) && ply.HasKeycardPermission(chamber.RequiredPermissions, true))
+
+            if(ply.HasKeycardPermission(lockerChamber.RequiredPermissions, true))
             {
                 canAccess = true;
-                locker.Toggle(colliderID);
+                lockerChamber.SetDoor(!lockerChamber.IsOpen, locker._grantedBeep);
+                locker.RefreshOpenedSyncvar();
                 return false;
             }
 
