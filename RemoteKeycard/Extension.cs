@@ -132,12 +132,10 @@ namespace RemoteKeycard
         {
             gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, true);
         }
-
-        public static void ToggleLock(this Scp079Generator gen)
-        {
-            gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, !gen.HasFlag(gen._flags, Scp079Generator.GeneratorFlags.Unlocked));
-        }
-
+        
+        /// <summary>
+        /// Get if player is Scp
+        /// </summary>
         public static bool IsScp(this Player ply) => ply.Role.GetTeam() is Team.SCPs;
     }
 }
