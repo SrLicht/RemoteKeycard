@@ -57,8 +57,7 @@ namespace RemoteKeycard
         }
 
         [PluginEvent(ServerEventType.PlayerInteractGenerator)]
-        bool OnPlayerInteractGenerator(Player ply, Scp079Generator generator,
-            Scp079Generator.GeneratorColliderId generatorColliderId)
+        bool OnPlayerInteractGenerator(Player ply, Scp079Generator generator, Scp079Generator.GeneratorColliderId generatorColliderId)
         {
             if (!Config.IsEnabled || !Config.AffectGenerators || ply.IsScp() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
                 ply.CurrentItem is KeycardItem || generatorColliderId != Scp079Generator.GeneratorColliderId.Door) return true;
