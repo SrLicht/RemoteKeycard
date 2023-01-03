@@ -55,19 +55,17 @@ namespace RemoteKeycard
         {
             door.NetworkTargetState = !door.NetworkTargetState;
         }
-        
-        ///// <summary>
-        ///// Open or Close this <see cref="Locker"/> its need ColliderID
-        ///// </summary>
-        ///// <param name="locker"></param>
-        ///// <param name="colliderId"></param>
-        //public static void Toggle(this Locker locker, byte colliderId)
-        //{
-        //    var chamber = locker.Chambers[colliderId];
+
+        /// <summary>
+        /// Open or close this <see cref="LockerChamber"/>
+        /// </summary>
+        public static void Toggle(this LockerChamber chamber, Locker locker)
+        {
+            // Northwood please put RefreshOpenedSyncvar in LockerChamber >:(
             
-        //    chamber.SetDoor(!chamber.IsOpen, locker._grantedBeep);
-        //    locker.RefreshOpenedSyncvar();
-        //}
+            chamber.SetDoor(!chamber.IsOpen, locker._grantedBeep); 
+            locker.RefreshOpenedSyncvar();
+        }
         
         /// <summary>
         /// Check if a Itemtype is SCP Item
@@ -81,12 +79,65 @@ namespace RemoteKeycard
         /// <returns>true if player no have items</returns>
         public static bool IsWithoutItems(this Player ply) =>
             ply.ReferenceHub.inventory.UserInventory.Items.Count == 0;
+        
+        /// <summary>
+        /// Get if this <see cref="Scp079Generator"/> is open
+        /// </summary>
+        /// <param name="gen"></param>
+        /// <returns></returns>
+        public static bool IsOpen(this Scp079Generator gen)
+        {
+            return gen.HasFlag(gen._flags, Scp079Generator.GeneratorFlags.Open);
+        }
 
         /// <summary>
-        /// Check if the player is any SCP.
+        /// Get if this <see cref="Scp079Generator"/> is unlocked
         /// </summary>
-        /// <returns>true if player is SCP</returns>
-        public static bool IsSCP(this Player ply) => ply.Role is RoleTypeId.Scp049 or RoleTypeId.Scp079
-            or RoleTypeId.Scp096 or RoleTypeId.Scp106 or RoleTypeId.Scp173 or RoleTypeId.Scp0492 or RoleTypeId.Scp939;
+        public static bool IsUnlocked(this Scp079Generator gen)
+        {
+            return gen.HasFlag(gen._flags, Scp079Generator.GeneratorFlags.Unlocked);
+        }
+        
+        /// <summary>
+        /// Open this <see cref="Scp079Generator"/>
+        /// </summary>
+        public static void Open(this Scp079Generator gen)
+        {
+            gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Open,  true);
+        }
+
+        /// <summary>
+        /// Close this <see cref="Scp079Generator"/>
+        /// </summary>
+        public static void Close(this Scp079Generator gen)
+        {
+            gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, false);
+        }
+
+        /* // For some strange reason using this method does not work, but using generator.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, !generator.HasFlag(generator._flags, Scp079Generator.GeneratorFlags.Open)); inside the event will...
+        /// <summary>
+        /// Open or close this <see cref="Scp079Generator"/>
+        /// </summary>
+        public static void Toggle(this Scp079Generator generator)
+        {
+            generator.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, !generator.HasFlag(generator._flags, Scp079Generator.GeneratorFlags.Open));
+        }*/
+
+        /// <summary>
+        /// Unlock or Lock this <see cref="Scp079Generator"/>.
+        /// </summary>
+        /// <param name="gen"></param>
+        /// <param name="value"></param>
+        public static void Unlock(this Scp079Generator gen)
+        {
+            gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, true);
+        }
+
+        public static void ToggleLock(this Scp079Generator gen)
+        {
+            gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, !gen.HasFlag(gen._flags, Scp079Generator.GeneratorFlags.Unlocked));
+        }
+
+        public static bool IsScp(this Player ply) => ply.Role.GetTeam() is Team.SCPs;
     }
 }
