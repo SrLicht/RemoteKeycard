@@ -16,7 +16,10 @@ namespace RemoteKeycard
 
         [Description("RemoteKeycard works with Lockers ?")]
         public bool AffectLockers { get; set; } = true;
-        
+
+        [Description("If a player has amnesia, should I disable RemoteKeycard for that player?")]
+        public bool AffectAmnesia { get; set; } = true;
+
         [Description("RolesType that are in this list cannot use RemoteKeycard")]
         public List<RoleTypeId> BlackListRole { get; set; } = new ()
         {
