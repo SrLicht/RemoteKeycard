@@ -84,6 +84,22 @@ namespace RemoteKeycard
             return false;
         }
 
+        #region Toggle Door/Locker
+
+        public static void Toggle(this DoorVariant door)
+        {
+            door.NetworkTargetState = !door.NetworkTargetState;
+        }
+
+        public static void Toggle(this LockerChamber chamber, Locker locker)
+        {
+            chamber.SetDoor(!chamber.IsOpen, locker._grantedBeep);
+            locker.RefreshOpenedSyncvar();
+        }
+        
+
+        #endregion
+
         /// <summary>
         /// Check if the player has no items in is inventory.
         /// </summary>
