@@ -11,6 +11,7 @@ using PlayerRoles;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
+using UnityEngine;
 using YamlDotNet.Core.Tokens;
 
 namespace RemoteKeycard
@@ -41,17 +42,20 @@ namespace RemoteKeycard
                 Config.BlacklistedDoors.Any(d => door.name.StartsWith(d)) || ply.CurrentItem is KeycardItem) return true;
             
             Log.Debug($"Player {ply.Nickname} ({ply.UserId}) try to open a door with RemoteKeycard", Config.IsDebug);
+            
             if (door.HasKeycardPermission(ply))
             {
                 if (Config.TraditionalMethods)
                 {
                     canOpen = true;
                     Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a door | Running traditional method", Config.IsDebug);
-                    door.Toggle();
+                    door.Toggle(ply.ReferenceHub);
+                    Log.Debug($"Door should have opened | traditional method");
                     return false;
                 }
                 Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a door", Config.IsDebug);
                 canOpen = true;
+                Log.Debug($"Door should have opened.");
             }
             
             return true;
@@ -71,11 +75,14 @@ namespace RemoteKeycard
                     canAccess = true;
                     Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a lockerchamber | Running traditional method", Config.IsDebug);
                     lockerChamber.Toggle(locker);
+                    Log.Debug($"LockerChamber should have opened | traditional method");
                     return false;
                 }
                 
                 Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a lockerchamber", Config.IsDebug);
                 canAccess = true;
+                
+                Log.Debug($"LockerChamber should have opened.");
             }
 
             return true;

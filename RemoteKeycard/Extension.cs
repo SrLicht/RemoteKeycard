@@ -18,8 +18,7 @@ namespace RemoteKeycard
         public static bool HasKeycardPermission(this DoorVariant door, Player player)
         {
             if (Plugin.Singleton.Config.AffectAmnesia &&
-                player.EffectsManager.TryGetEffect<CustomPlayerEffects.AmnesiaItems>(out var effect) &&
-                effect.IsEnabled)
+                player.EffectsManager.GetEffect<CustomPlayerEffects.AmnesiaItems>().IsEnabled)
             {
                 return false;
             }
@@ -43,8 +42,7 @@ namespace RemoteKeycard
         public static bool HasKeycardPermission(this LockerChamber chamber, Player player)
         {
             if (Plugin.Singleton.Config.AffectAmnesia &&
-                player.EffectsManager.TryGetEffect<CustomPlayerEffects.AmnesiaItems>(out var effect) &&
-                effect.IsEnabled)
+                player.EffectsManager.GetEffect<CustomPlayerEffects.AmnesiaItems>().IsEnabled)
             {
                 return false;
             }
@@ -67,8 +65,7 @@ namespace RemoteKeycard
         public static bool HasKeycardPermission(this Scp079Generator generator, Player player)
         {
             if (Plugin.Singleton.Config.AffectAmnesia &&
-                player.EffectsManager.TryGetEffect<CustomPlayerEffects.AmnesiaItems>(out var effect) &&
-                effect.IsEnabled)
+                player.EffectsManager.GetEffect<CustomPlayerEffects.AmnesiaItems>().IsEnabled)
             {
                 return false;
             }
@@ -85,19 +82,17 @@ namespace RemoteKeycard
         }
 
         #region Toggle Door/Locker
-
-        public static void Toggle(this DoorVariant door)
+        public static void Toggle(this DoorVariant door, ReferenceHub ply)
         {
-            door.NetworkTargetState = !door.NetworkTargetState;
+            door.NetworkTargetState = !door.TargetState;
+            door._triggerPlayer = ply;
         }
-
+        
         public static void Toggle(this LockerChamber chamber, Locker locker)
         {
             chamber.SetDoor(!chamber.IsOpen, locker._grantedBeep);
             locker.RefreshOpenedSyncvar();
         }
-        
-
         #endregion
 
         /// <summary>
