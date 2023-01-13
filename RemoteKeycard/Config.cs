@@ -12,7 +12,7 @@ namespace RemoteKeycard
         public bool IsDebug { get; set; } = false;
 
         [Description("If normal remotekeycard dont work try use this one")]
-        public bool TraditionalMethods { get; set; } = false;
+        public bool TraditionalMethods { get; set; } = true;
 
         [Description("RemoteKeycard works with Doors ?")]
         public bool AffectDoors { get; set; } = true;

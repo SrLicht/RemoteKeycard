@@ -23,7 +23,7 @@ namespace RemoteKeycard
         
         [PluginConfig] public Config Config;
         
-        public const string Version = "1.1.5";
+        public const string Version = "1.1.6";
         
         [PluginEntryPoint("RemoteKeycard", Version,
             "Allow player to open doors, lockers and generators without a Keycard in hand", "SrLicht")]
@@ -50,12 +50,12 @@ namespace RemoteKeycard
                     canOpen = true;
                     Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a door | Running traditional method", Config.IsDebug);
                     door.Toggle(ply.ReferenceHub);
-                    Log.Debug($"Door should have opened | traditional method");
+                    Log.Debug($"Door should have opened | traditional method", Config.IsDebug);
                     return false;
                 }
                 Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a door", Config.IsDebug);
                 canOpen = true;
-                Log.Debug($"Door should have opened.");
+                Log.Debug($"Door should have opened.", Config.IsDebug);
             }
             
             return true;
@@ -75,14 +75,14 @@ namespace RemoteKeycard
                     canAccess = true;
                     Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a lockerchamber | Running traditional method", Config.IsDebug);
                     lockerChamber.Toggle(locker);
-                    Log.Debug($"LockerChamber should have opened | traditional method");
+                    Log.Debug($"LockerChamber should have opened | traditional method", Config.IsDebug);
                     return false;
                 }
                 
                 Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a lockerchamber", Config.IsDebug);
                 canAccess = true;
                 
-                Log.Debug($"LockerChamber should have opened.");
+                Log.Debug($"LockerChamber should have opened.", Config.IsDebug);
             }
 
             return true;
