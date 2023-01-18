@@ -6,8 +6,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Version></Version>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyVersion>1.1.6</AssemblyVersion>
-    <FileVersion>1.1.6</FileVersion>
+    <AssemblyVersion>1.1.7</AssemblyVersion>
+    <FileVersion>1.1.7</FileVersion>
   </PropertyGroup>
 
  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -31,8 +31,8 @@
  </ItemGroup>
 
  <ItemGroup>
-   <PackageReference Include="Northwood.PluginAPI" Version="12.0.0-rc.6" />
-   <PackageReference Include="Northwood.PluginAPI.Analyzers" Version="12.0.0-rc.6" />
+   <PackageReference Include="Northwood.PluginAPI" Version="12.0.0" />
+   <PackageReference Include="Northwood.PluginAPI.Analyzers" Version="12.0.0" />
    <PackageReference Include="YamlDotNet" Version="12.2.1" />
  </ItemGroup>
 
