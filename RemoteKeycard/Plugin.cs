@@ -23,8 +23,9 @@ namespace RemoteKeycard
         
         [PluginConfig] public Config Config;
         
-        public const string Version = "1.1.6";
+        public const string Version = "1.1.7";
         
+        [PluginPriority(LoadPriority.Highest)]
         [PluginEntryPoint("RemoteKeycard", Version,
             "Allow player to open doors, lockers and generators without a Keycard in hand", "SrLicht")]
         void LoadPlugin()
