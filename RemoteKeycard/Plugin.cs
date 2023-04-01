@@ -23,7 +23,7 @@ namespace RemoteKeycard
         
         [PluginConfig] public Config Config;
         
-        public const string Version = "1.1.7";
+        public const string Version = "1.1.8";
         
         [PluginPriority(LoadPriority.Highest)]
         [PluginEntryPoint("RemoteKeycard", Version,
