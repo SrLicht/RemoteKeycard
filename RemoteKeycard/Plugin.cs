@@ -40,7 +40,8 @@ namespace RemoteKeycard
         bool OnPlayerInteractDoor(Player ply, DoorVariant door, bool canOpen)
         {
             if (door.ActiveLocks > 0) return false;
-            
+            float tmpState = door.GetExactState();
+            if (door.GetExactState() > 0 && door.GetExactState() < 1) return false;
             if (!Config.IsEnabled || !Config.AffectDoors || ply.IsSCP() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
                 Config.BlacklistedDoors.Any(d => door.name.StartsWith(d)) || ply.CurrentItem is KeycardItem) return true;
             
@@ -48,6 +49,22 @@ namespace RemoteKeycard
             
             if (door.HasKeycardPermission(ply))
             {
+                if(tmpState == 1)
+                {
+                    if(door.NetworkTargetState == false)
+                    {
+                        canOpen = false;
+                        return false;
+                    }
+                }
+                else if(tmpState == 0)
+                {
+                    if (door.NetworkTargetState == true)
+                    {
+                        canOpen = false;
+                        return false;
+                    }
+                }
                 if (Config.TraditionalMethods)
                 {
                     canOpen = true;
