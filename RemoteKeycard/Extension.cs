@@ -18,7 +18,7 @@ namespace RemoteKeycard
         public static bool HasKeycardPermission(this DoorVariant door, Player player)
         {
             if (Plugin.Singleton.Config.AffectAmnesia &&
-                player.EffectsManager.GetEffect<CustomPlayerEffects.AmnesiaItems>().IsEnabled)
+                player.EffectsManager.GetEffect<CustomPlayerEffects.AmnesiaItems>().IsEnabled && !player.IsBypassEnabled)
             {
                 return false;
             }
@@ -86,6 +86,15 @@ namespace RemoteKeycard
         {
             door.NetworkTargetState = !door.TargetState;
             door._triggerPlayer = ply;
+            switch (door.NetworkTargetState)
+            {
+                case false:
+                    DoorEvents.TriggerAction(door, DoorAction.Closed, ply);
+                    break;
+                case true:
+                    DoorEvents.TriggerAction(door, DoorAction.Opened, ply);
+                    break;
+            }
         }
         
         public static void Toggle(this LockerChamber chamber, Locker locker)
