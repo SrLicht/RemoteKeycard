@@ -45,20 +45,18 @@ namespace RemoteKeycard
         bool OnPlayerInteractDoor(Player ply, DoorVariant door, bool canOpen)
         {
             // Check if the door have any type of lock (Scp079/Warhead/RemoteAdmin)
-            if (door.ActiveLocks > 0 && !ply.IsBypassEnabled) return false;
+            if (door.ActiveLocks > 0 && !ply.IsBypassEnabled) return true;
             
             if (!Config.IsEnabled || !Config.AffectDoors || ply.IsSCP() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
                 Config.BlacklistedDoors.Any(d => door.name.StartsWith(d)) || ply.CurrentItem is KeycardItem) return true;
-            
+
+            //fix for servers with exiled and NWapi causing the event to be called even when the interaction should of been blocked
+            if (!door.AllowInteracting(ply.ReferenceHub, 0)) return false;
+
             Log.Debug($"Player {ply.Nickname} ({ply.UserId}) try to open a door with RemoteKeycard", Config.IsDebug);
             // Check if the player have a keycard to open the door.
             if (door.HasKeycardPermission(ply))
-            {
-                // This method is used when there is another plugin meddling with the ServerEventType.PlayerInteractDoor event.
-                // This check is only for Exiled servers.
-                if (door is PryableDoor && !door.AllowInteracting(ply.ReferenceHub, 0))
-                    return true;
-                    
+            { 
                 // Unnecessary but I do it anyway
                 canOpen = true;
                 Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a door", Config.IsDebug);
