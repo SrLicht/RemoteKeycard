@@ -45,7 +45,7 @@ namespace RemoteKeycard
         bool OnPlayerInteractDoor(Player ply, DoorVariant door, bool canOpen)
         {
             // Check if the door have any type of lock (Scp079/Warhead/RemoteAdmin)
-            if (door.ActiveLocks > 0 && !ply.IsBypassEnabled) return false;
+            if (door.ActiveLocks > 0 && !ply.IsBypassEnabled) return true;
             
             if (!Config.IsEnabled || !Config.AffectDoors || ply.IsSCP() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
                 Config.BlacklistedDoors.Any(d => door.name.StartsWith(d)) || ply.CurrentItem is KeycardItem) return true;
