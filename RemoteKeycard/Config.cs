@@ -1,6 +1,6 @@
+using PlayerRoles;
 using System.Collections.Generic;
 using System.ComponentModel;
-using PlayerRoles;
 
 namespace RemoteKeycard
 {
@@ -24,14 +24,14 @@ namespace RemoteKeycard
         public bool AffectAmnesia { get; set; } = true;
 
         [Description("RolesType that are in this list cannot use RemoteKeycard")]
-        public List<RoleTypeId> BlackListRole { get; set; } = new ()
+        public List<RoleTypeId> BlackListRole { get; set; } = new()
         {
             RoleTypeId.None
         };
-        
+
 
         [Description("RemoteKeycard will not work with doors that are in this list")]
-        public List<string> BlacklistedDoors { get; set; } = new ()
+        public List<string> BlacklistedDoors { get; set; } = new()
         {
             "HCZ",
             "LCZ",
@@ -42,7 +42,7 @@ namespace RemoteKeycard
         };
 
         [Description("RemoteKeycard will not work with lockers that are on this list")]
-        public List<string> BlacklistedLockers { get; set; } = new ()
+        public List<string> BlacklistedLockers { get; set; } = new()
         {
             "MiscLocker",
             "Adrenaline",

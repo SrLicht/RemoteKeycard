@@ -1,11 +1,9 @@
-using System.Linq;
-using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using InventorySystem.Items.Keycards;
 using MapGeneration.Distributors;
 using PlayerRoles;
 using PluginAPI.Core;
-using PluginAPI.Core.Interfaces;
+using System.Linq;
 
 namespace RemoteKeycard
 {
@@ -30,7 +28,7 @@ namespace RemoteKeycard
                     return true;
                 }
             }
-            
+
             return false;
 
         }
@@ -46,7 +44,7 @@ namespace RemoteKeycard
             {
                 return false;
             }
-            
+
             foreach (var keycard in player.Items.Where(t => t is KeycardItem))
             {
                 if (((KeycardItem)keycard).Permissions.HasFlagFast(chamber.RequiredPermissions))
@@ -69,7 +67,7 @@ namespace RemoteKeycard
             {
                 return false;
             }
-            
+
             foreach (var keycard in player.Items.Where(t => t is KeycardItem))
             {
                 if (((KeycardItem)keycard).Permissions.HasFlagFast(generator._requiredPermission))
@@ -96,7 +94,7 @@ namespace RemoteKeycard
                     break;
             }
         }
-        
+
         public static void Toggle(this LockerChamber chamber, Locker locker)
         {
             chamber.SetDoor(!chamber.IsOpen, locker._grantedBeep);
@@ -128,7 +126,7 @@ namespace RemoteKeycard
         {
             gen.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, true);
         }
-        
+
         /// <summary>
         /// Get if player is Scp
         /// </summary>

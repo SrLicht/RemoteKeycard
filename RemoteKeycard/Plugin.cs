@@ -1,36 +1,30 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using Footprinting;
-using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
-using InventorySystem.Items;
 using InventorySystem.Items.Keycards;
 using MapGeneration.Distributors;
-using PlayerRoles;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
-using UnityEngine;
-using YamlDotNet.Core.Tokens;
+using PluginAPI.Events;
+using System.Linq;
 
 namespace RemoteKeycard
 {
-    
+
     public class Plugin
     {
         /// <summary>
         /// Plugin instance.
         /// </summary>
         public static Plugin Singleton;
-        
+
         [PluginConfig] public Config Config;
 
         /// <summary>
         /// Plugin Version.
         /// </summary>
         private const string Version = "1.1.9";
-        
+
         [PluginEntryPoint("RemoteKeycard", Version,
             "Allow player to open doors, lockers and generators without a Keycard in hand", "SrLicht")]
         void LoadPlugin()
@@ -41,77 +35,77 @@ namespace RemoteKeycard
 
         // These damn events need a lot of checks to keep bad things from happening so read it at your own risk.
 
-        [PluginEvent(ServerEventType.PlayerInteractDoor)]
-        bool OnPlayerInteractDoor(Player ply, DoorVariant door, bool canOpen)
+        [PluginEvent]
+        public bool OnPlayerInteractDoor(PlayerInteractDoorEvent ev)
         {
             // Check if the door have any type of lock (Scp079/Warhead/RemoteAdmin)
-            if (door.ActiveLocks > 0 && !ply.IsBypassEnabled) return true;
-            
-            if (!Config.IsEnabled || !Config.AffectDoors || ply.IsSCP() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
-                Config.BlacklistedDoors.Any(d => door.name.StartsWith(d)) || ply.CurrentItem is KeycardItem) return true;
+            if (ev.Door.ActiveLocks > 0 && !ev.Player.IsBypassEnabled) return true;
+
+            if (!Config.IsEnabled || !Config.AffectDoors || ev.Player.IsSCP() || Config.BlackListRole.Contains(ev.Player.Role) || ev.Player.IsWithoutItems() ||
+                Config.BlacklistedDoors.Any(d => ev.Door.name.StartsWith(d)) || ev.Player.CurrentItem is KeycardItem) return true;
 
             //fix for servers with exiled and NWapi causing the event to be called even when the interaction should of been blocked
-            if (!door.AllowInteracting(ply.ReferenceHub, 0)) return false;
+            if (!ev.Door.AllowInteracting(ev.Player.ReferenceHub, 0)) return false;
 
-            Log.Debug($"Player {ply.Nickname} ({ply.UserId}) try to open a door with RemoteKeycard", Config.IsDebug);
+            Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) try to open a door with RemoteKeycard", Config.IsDebug);
             // Check if the player have a keycard to open the door.
-            if (door.HasKeycardPermission(ply))
-            { 
+            if (ev.Door.HasKeycardPermission(ev.Player))
+            {
                 // Unnecessary but I do it anyway
-                canOpen = true;
-                Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a door", Config.IsDebug);
+                ev.CanOpen = true;
+                Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has permission to open a door", Config.IsDebug);
                 // Opens or closes the door that the player is interacting with.
-                door.Toggle(ply.ReferenceHub);
+                ev.Door.Toggle(ev.Player.ReferenceHub);
                 return false;
             }
-            
+
             return true;
         }
-        
-        [PluginEvent(ServerEventType.PlayerInteractLocker)]
-        bool OnPlayerInteractLocker(Player ply, Locker locker, LockerChamber lockerChamber, bool canAccess)
+
+        [PluginEvent]
+        public bool OnPlayerInteractLocker(PlayerInteractLockerEvent ev)
         {
-            if (!Config.IsEnabled || !Config.AffectLockers || ply.IsSCP() ||  Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
-                Config.BlacklistedLockers.Any(l => locker.name.StartsWith(l)) || ply.CurrentItem is KeycardItem) return true;
-            
-            Log.Debug($"Player {ply.Nickname} ({ply.UserId}) try to open a locker chamber with RemoteKeycard", Config.IsDebug);
+            if (!Config.IsEnabled || !Config.AffectLockers || ev.Player.IsSCP() || Config.BlackListRole.Contains(ev.Player.Role) || ev.Player.IsWithoutItems() ||
+                Config.BlacklistedLockers.Any(l => ev.Locker.name.StartsWith(l)) || ev.Player.CurrentItem is KeycardItem) return true;
+
+            Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) try to open a locker chamber with RemoteKeycard", Config.IsDebug);
             // Check if the player have permission to open the locker chamber.
-            if (lockerChamber.HasKeycardPermission(ply))
+            if (ev.Chamber.HasKeycardPermission(ev.Player))
             {
                 // Unnecessary but I do it anyway
-                canAccess = true;
-                Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to open a locker chamber", Config.IsDebug);
-                lockerChamber.Toggle(locker);
+                ev.CanOpen = true;
+                Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has permission to open a locker chamber", Config.IsDebug);
+                ev.Chamber.Toggle(ev.Locker);
                 return false;
             }
 
             return true;
         }
 
-        [PluginEvent(ServerEventType.PlayerInteractGenerator)]
-        bool OnPlayerInteractGenerator(Player ply, Scp079Generator generator, Scp079Generator.GeneratorColliderId generatorColliderId)
+        [PluginEvent]
+        public bool OnPlayerInteractGenerator(PlayerInteractGeneratorEvent ev)
         {
-            if (!Config.IsEnabled || !Config.AffectGenerators || ply.IsSCP() || Config.BlackListRole.Contains(ply.Role) || ply.IsWithoutItems() ||
-                ply.CurrentItem is KeycardItem || generatorColliderId != Scp079Generator.GeneratorColliderId.Door) return true;
+            if (!Config.IsEnabled || !Config.AffectGenerators || ev.Player.IsSCP() || Config.BlackListRole.Contains(ev.Player.Role) || ev.Player.IsWithoutItems() ||
+                ev.Player.CurrentItem is KeycardItem || ev.GeneratorColliderId != Scp079Generator.GeneratorColliderId.Door) return true;
 
-            Log.Debug($"Player {ply.Nickname} ({ply.UserId}) try to open a generator with RemoteKeycard", Config.IsDebug);
+            Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) try to open a generator with RemoteKeycard", Config.IsDebug);
             // Check if the player have permission to open the generator.
-            if (generator.HasKeycardPermission(ply))
+            if (ev.Generator.HasKeycardPermission(ev.Player))
             {
-                Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has permission to unlock a generator", Config.IsDebug);
+                Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has permission to unlock a generator", Config.IsDebug);
                 // If the generator is Locked
-                if (!generator.IsUnlocked())
+                if (!ev.Generator.IsUnlocked())
                 {
-                    generator.Unlock();
+                    ev.Generator.Unlock();
                     // Grant tickets to the ply team.
-                    generator.ServerGrantTicketsConditionally(new Footprint(ply.ReferenceHub), 0.5f);
+                    ev.Generator.ServerGrantTicketsConditionally(new Footprint(ev.Player.ReferenceHub), 0.5f);
                     // Just in case
-                    generator._cooldownStopwatch.Restart();
-                    Log.Debug($"Player {ply.Nickname} ({ply.UserId}) has unlocked a generator.", Config.IsDebug);
+                    ev.Generator._cooldownStopwatch.Restart();
+                    Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has unlocked a generator.", Config.IsDebug);
                     return false;
                 }
             }
-            
+
             return true;
         }
     }
