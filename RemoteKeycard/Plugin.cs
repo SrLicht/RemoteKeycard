@@ -23,7 +23,7 @@ namespace RemoteKeycard
         /// <summary>
         /// Plugin Version.
         /// </summary>
-        private const string Version = "1.1.9";
+        private const string Version = "1.1.10";
 
         [PluginEntryPoint("RemoteKeycard", Version,
             "Allow player to open doors, lockers and generators without a Keycard in hand", "SrLicht")]
