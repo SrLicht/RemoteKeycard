@@ -2,6 +2,7 @@ using Interactables.Interobjects.DoorUtils;
 using InventorySystem.Items.Keycards;
 using MapGeneration.Distributors;
 using PlayerRoles;
+using PlayerRoles.PlayableScps.Scp3114;
 using PluginAPI.Core;
 using System.Linq;
 
@@ -130,6 +131,14 @@ namespace RemoteKeycard
         /// <summary>
         /// Get if player is Scp
         /// </summary>
-        public static bool IsSCP(this Player ply) => ply.Role.GetTeam() is Team.SCPs;
+        public static bool IsSCP(this Player ply)
+        {
+            if(ply.Role == RoleTypeId.Scp3114 && ply.RoleBase is Scp3114Role role && role.Disguised)
+            {
+                return false;
+            }
+
+            return ply.Role.GetTeam() is Team.SCPs;
+        }
     }
 }
