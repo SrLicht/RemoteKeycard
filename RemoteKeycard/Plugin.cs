@@ -23,15 +23,16 @@ namespace RemoteKeycard
         /// <summary>
         /// Plugin Version.
         /// </summary>
-        private const string Version = "1.1.11";
+        private const string Version = "1.1.12";
 
-        [PluginEntryPoint("RemoteKeycard", Version,
-            "Allow player to open doors, lockers and generators without a Keycard in hand", "SrLicht")]
+        [PluginEntryPoint("RemoteKeycard", Version, "Allow player to open doors, lockers and generators without a Keycard in hand", "SrLicht")]
         void LoadPlugin()
         {
             Singleton = this;
-            Log.Warning("This version of the plugin is only compatible with the \"pluginapi-beta\" branch of SCP:SL.");
+            if (!Config.IsEnabled)
+                return;
             PluginAPI.Events.EventManager.RegisterEvents(this);
+            Log.Warning($"RemoteKeycard {Version} fully loaded");
         }
 
         // These damn events need a lot of checks to keep bad things from happening so read it at your own risk.
