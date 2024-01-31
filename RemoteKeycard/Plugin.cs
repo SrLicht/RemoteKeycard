@@ -29,8 +29,10 @@ namespace RemoteKeycard
         void LoadPlugin()
         {
             Singleton = this;
+
             if (!Config.IsEnabled)
                 return;
+
             PluginAPI.Events.EventManager.RegisterEvents(this);
             Log.Warning($"RemoteKeycard {Version} fully loaded");
         }
