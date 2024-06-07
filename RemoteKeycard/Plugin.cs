@@ -10,7 +10,6 @@ using System.Linq;
 
 namespace RemoteKeycard
 {
-
     public class Plugin
     {
         /// <summary>
@@ -23,7 +22,7 @@ namespace RemoteKeycard
         /// <summary>
         /// Plugin Version.
         /// </summary>
-        private const string Version = "1.1.12";
+        private const string Version = "1.1.13";
 
         [PluginEntryPoint("RemoteKeycard", Version, "Allow player to open doors, lockers and generators without a Keycard in hand", "SrLicht")]
         void LoadPlugin()
