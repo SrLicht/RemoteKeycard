@@ -7,6 +7,7 @@ using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
 using PluginAPI.Events;
 using System.Linq;
+using Respawning;
 
 namespace RemoteKeycard
 {
@@ -22,7 +23,7 @@ namespace RemoteKeycard
         /// <summary>
         /// Plugin Version.
         /// </summary>
-        private const string Version = "1.1.13";
+        private const string Version = "1.1.14";
 
         [PluginEntryPoint("RemoteKeycard", Version, "Allow player to open doors, lockers and generators without a Keycard in hand", "SrLicht")]
         void LoadPlugin()
@@ -73,16 +74,15 @@ namespace RemoteKeycard
 
             Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) try to open a locker chamber with RemoteKeycard", Config.IsDebug);
             // Check if the player have permission to open the locker chamber.
-            if (ev.Chamber.HasKeycardPermission(ev.Player))
-            {
-                // Unnecessary but I do it anyway
-                ev.CanOpen = true;
-                Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has permission to open a locker chamber", Config.IsDebug);
-                ev.Chamber.Toggle(ev.Locker);
-                return false;
-            }
+            if (!ev.Chamber.HasKeycardPermission(ev.Player)) 
+                return true;
+            
+            // Unnecessary but I do it anyway
+            ev.CanOpen = true;
+            Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has permission to open a locker chamber", Config.IsDebug);
+            ev.Chamber.Toggle(ev.Locker);
+            return false;
 
-            return true;
         }
 
         [PluginEvent]
@@ -97,16 +97,18 @@ namespace RemoteKeycard
             {
                 Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has permission to unlock a generator", Config.IsDebug);
                 // If the generator is Locked
-                if (!ev.Generator.IsUnlocked())
-                {
-                    ev.Generator.Unlock();
-                    // Grant tickets to the ply team.
-                    //ev.Generator.ServerGrantTicketsConditionally(new Footprint(ev.Player.ReferenceHub), 0.5f);
-                    // Just in case
-                    ev.Generator._cooldownStopwatch.Restart();
-                    Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has unlocked a generator.", Config.IsDebug);
-                    return false;
-                }
+                if (ev.Generator.IsUnlocked()) 
+                    return true;
+                
+                
+                ev.Generator.Unlock();
+                // Grant tickets to the ply team.
+                // TODO: Reimplement if is needed, idk now if opening a generator grants tickets to the teams.
+                //ev.Generator.ServerGrantTicketsConditionally(new Footprint(ev.Player.ReferenceHub), 0.5f);
+                // Just in case
+                ev.Generator._cooldownStopwatch.Restart();
+                Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has unlocked a generator.", Config.IsDebug);
+                return false;
             }
 
             return true;
