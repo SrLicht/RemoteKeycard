@@ -101,7 +101,7 @@ namespace RemoteKeycard
                 {
                     ev.Generator.Unlock();
                     // Grant tickets to the ply team.
-                    ev.Generator.ServerGrantTicketsConditionally(new Footprint(ev.Player.ReferenceHub), 0.5f);
+                    //ev.Generator.ServerGrantTicketsConditionally(new Footprint(ev.Player.ReferenceHub), 0.5f);
                     // Just in case
                     ev.Generator._cooldownStopwatch.Restart();
                     Log.Debug($"Player {ev.Player.Nickname} ({ev.Player.UserId}) has unlocked a generator.", Config.IsDebug);
